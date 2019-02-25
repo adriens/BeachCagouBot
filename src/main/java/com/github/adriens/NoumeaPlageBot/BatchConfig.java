@@ -50,7 +50,7 @@ public class BatchConfig {
     public Job demoJob(){
         System.out.println("ENV : <" + env.getProperty("env") + ">");
         return jobs.get("demoJob")
-                //.incrementer(new RunIdIncrementer())
+                .incrementer(new RunIdIncrementer())
                 .start(stepTwitter())
                 .build();
     }
