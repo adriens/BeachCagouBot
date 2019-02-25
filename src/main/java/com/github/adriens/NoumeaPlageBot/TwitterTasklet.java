@@ -9,17 +9,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.vdurmont.emoji.EmojiParser;
+import java.io.File;
+import java.net.URI;
 import java.util.Date;
+import java.util.List;
 import javax.ws.rs.core.MediaType;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import twitter4j.Status;
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
+import twitter4j.UploadedMedia;
 
 /**
  *
@@ -57,8 +61,33 @@ public class TwitterTasklet implements Tasklet {
 
             // the twitter part
             Twitter twitter = TwitterFactory.getSingleton();
-            Status status = twitter.updateStatus((new Date()).toString() + "\\u263A Tweet from Spring boot 2 ;-p See https://www.noumea.nc/actualites/qualite-des-eaux-de-baignade-0");
-            System.out.println("Successfully updated the status to [" + status.getText() + "].");
+            // get previous status
+            List<Status> statuses = twitter.getHomeTimeline();
+            if (statuses.size() > 0) {
+                // Status status = twitter.updateStatus((new Date()).toString() + "\\u263A Tweet from Spring boot 2 ;-p See https://www.noumea.nc/actualites/qualite-des-eaux-de-baignade-0");
+                //System.out.println("Successfully updated the status to [" + status.getText() + "].");
+                // the latest tweet posted if the first of the list
+                Status lastTwitterStatus = statuses.get(0);
+                System.out.println("Latest tweet : " + lastTwitterStatus.getText());
+                String str = "[" + (new Date()) + "] :swimmer: :small_red_triangle: :large_blue_diamond: An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!";
+                String result = EmojiParser.parseToUnicode(str);
+                
+                //UploadedMedia media = twitter.uploadMedia(new File("https://www.noumea.nc/sites/default/files/drapeau-jaune.png"));
+                //StatusUpdate update = new StatusUpdate(result);
+                //update.setMedia(new File(new URI("https://www.noumea.nc/sites/default/files/drapeau-jaune.png")));
+                twitter.updateStatus(result);
+            } else {
+                // the first status ! We post
+                String statusMessage;
+                statusMessage = "[" + (new Date()).toString() + "]\n";
+                statusMessage += plageStatus.getNomPlage() + ":" + plageStatus.getBaignadeMessage() + ".\n";
+                statusMessage += "color:" + plageStatus.getCouleurDrapeauEnglish() + "\n";
+                statusMessage += "https://www.noumea.nc/actualites/qualite-des-eaux-de-baignade-0";
+                Status status = twitter.updateStatus(statusMessage);
+                
+
+            }
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
