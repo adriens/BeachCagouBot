@@ -10,8 +10,6 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.vdurmont.emoji.EmojiParser;
-import java.io.File;
-import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
@@ -20,10 +18,8 @@ import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import twitter4j.Status;
-import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
-import twitter4j.UploadedMedia;
 
 /**
  *
@@ -32,6 +28,13 @@ import twitter4j.UploadedMedia;
 public class TwitterTasklet implements Tasklet {
 
     private String endpoint;
+    
+    public static final String MESSAGE_DRAPEAU_BLEU = "Drapeau bleu. Eau de bonne qualité : baignade autorisée.";
+    public static final String MESSAGE_DRAPEAU_JAUNE = "Drapeau jaune. Eau de qualité médiocre : baignade déconseillée.";
+    public static final String MESSAGE_DRAPEAU_ROUGE = "Drapeau rouge. Eau de mauvaise qualité : baignade interdite";
+    
+    public static final String URL_EAUX_BAIGNADES = "https://goo.gl/frSuC8";
+    
 
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         System.out.println("TwitterTask start..");
