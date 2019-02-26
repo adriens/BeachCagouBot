@@ -35,6 +35,13 @@ public class TwitterTasklet implements Tasklet {
     
     public static final String URL_EAUX_BAIGNADES = "https://goo.gl/frSuC8";
     
+    public static final String MESSAGE_CUSTO_BLEU = "";
+    public static final String MESSAGE_CUSTO_JAUNE = "";
+    public static final String MESSAGE_CUSTO_ROUGE = "";
+    
+    public static final String HASHTAGS_TWEET = "#noumea #waterquaity #baiedescitrons #cagougeek";
+    
+    
 
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         System.out.println("TwitterTask start..");
