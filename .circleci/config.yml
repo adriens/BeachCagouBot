@@ -44,7 +44,7 @@ workflows:
   version: 2
   commit-workflow:
     jobs:
-      build
+      - build
   scheduled-workflow:
     triggers:
       - schedule:
