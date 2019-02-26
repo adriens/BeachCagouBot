@@ -43,8 +43,7 @@ workflows:
   version: 2
   commit:
     jobs:
-      - test
-      - deploy
+      - build
   nightly:
     triggers:
       - schedule:
