@@ -42,7 +42,10 @@ jobs:
 
 workflows:
   version: 2
-  nightly:
+  commit-workflow:
+    jobs:
+      - build
+  scheduled-workflow:
     triggers:
       - schedule:
           cron: "0 */4 * * *"
