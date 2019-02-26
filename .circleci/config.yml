@@ -38,5 +38,5 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run the job
-      - run: mvn spring-boot:run
+      - run: mvn spring-boot:run -Dtwitter4j.oauth.consumerKey=$consumerKey -Dtwitter4j.oauth.consumerSecret=$consumerSecret -Dtwitter4j.oauth.accessToken=$accessToken -Dtwitter4j.oauth.accessTokenSecret=$accessTokenSecret
       
