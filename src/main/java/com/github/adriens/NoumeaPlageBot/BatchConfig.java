@@ -40,7 +40,7 @@ public class BatchConfig {
                 .build();*/
         
         TwitterTasklet tasklet = new TwitterTasklet();
-        tasklet.setEndpoint(env.getProperty("env"));
+        tasklet.setEndpoint(env.getProperty("endpoint"));
         return steps.get("stepTwitter")
                 .tasklet(tasklet)
                 .build();
@@ -48,7 +48,7 @@ public class BatchConfig {
      
     @Bean
     public Job demoJob(){
-        System.out.println("ENV : <" + env.getProperty("env") + ">");
+        System.out.println("ENV : <" + env.getProperty("endpoint") + ">");
         return jobs.get("demoJob")
                 .incrementer(new RunIdIncrementer())
                 .start(stepTwitter())

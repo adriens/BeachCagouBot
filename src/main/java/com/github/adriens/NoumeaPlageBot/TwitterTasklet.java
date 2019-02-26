@@ -70,8 +70,7 @@ public class TwitterTasklet implements Tasklet {
         try {
             Client client = Client.create();
             // https://eaux-baignade-noumea.herokuapp.com/plages/{plageId}
-            WebResource webResource = client
-                    .resource("https://eaux-baignade-noumea.herokuapp.com/plages/0");
+            WebResource webResource = client.resource(getEndpoint());
             ClientResponse response = webResource.accept(MediaType.APPLICATION_JSON).
                     header("content-type", MediaType.APPLICATION_JSON).
                     get(ClientResponse.class);
