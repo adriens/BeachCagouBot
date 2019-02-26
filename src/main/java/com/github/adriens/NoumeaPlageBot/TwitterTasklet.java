@@ -41,7 +41,27 @@ public class TwitterTasklet implements Tasklet {
     
     public static final String HASHTAGS_TWEET = "#noumea #waterquaity #baiedescitrons #cagougeek";
     
-    
+    public static final String composeStatusMessage(PlageStatus aPlageStatus){
+        String out = "[" + (new Date()) + "] " + aPlageStatus.getNomPlage() + "\n";
+        if(aPlageStatus.getCouleurDrapeauEnglish().equalsIgnoreCase("blue")){
+            out += MESSAGE_DRAPEAU_BLEU + "\n";
+            out += MESSAGE_CUSTO_BLEU + "\n";
+        }
+        else if(aPlageStatus.getCouleurDrapeauEnglish().equalsIgnoreCase("yellow")){
+            out += MESSAGE_DRAPEAU_JAUNE + "\n";
+            out += MESSAGE_CUSTO_JAUNE + "\n";
+        }
+        else if(aPlageStatus.getCouleurDrapeauEnglish().equalsIgnoreCase("red")){
+            out += MESSAGE_DRAPEAU_ROUGE + "\n";
+            out += MESSAGE_CUSTO_ROUGE + "\n";
+        }
+        else {
+            out += "Couleur non reconnue.";
+        }
+        //out += HASHTAGS_TWEET;
+        out += URL_EAUX_BAIGNADES; 
+        return out;
+    }
 
     public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
         System.out.println("TwitterTask start..");
@@ -79,23 +99,20 @@ public class TwitterTasklet implements Tasklet {
                 // the latest tweet posted if the first of the list
                 Status lastTwitterStatus = statuses.get(0);
                 System.out.println("Latest tweet : " + lastTwitterStatus.getText());
-                String str = "[" + (new Date()) + "] :swimmer: :small_red_triangle: :large_blue_diamond: An :grinning:awesome :smiley:string &#128516;with a few :wink:emojis!";
-                String result = EmojiParser.parseToUnicode(str);
+                // check previous flag color
+                if(lastTwitterStatus.getText().contains(plageStatus.getCouleurDrapeau().toLowerCase())){
+                    System.out.println("No chnage in flag : do not tweet anything");
+                }
+                else{
+                    System.out.println("Drapeau change : now <" + plageStatus.getCouleurDrapeau() + ">");
+                    Status status = twitter.updateStatus(EmojiParser.parseToUnicode(TwitterTasklet.composeStatusMessage(plageStatus)));
                 
-                //UploadedMedia media = twitter.uploadMedia(new File("https://www.noumea.nc/sites/default/files/drapeau-jaune.png"));
-                //StatusUpdate update = new StatusUpdate(result);
-                //update.setMedia(new File(new URI("https://www.noumea.nc/sites/default/files/drapeau-jaune.png")));
-                twitter.updateStatus(result);
+                }
             } else {
-                // the first status ! We post
-                String statusMessage;
-                statusMessage = "[" + (new Date()).toString() + "]\n";
-                statusMessage += plageStatus.getNomPlage() + ":" + plageStatus.getBaignadeMessage() + ".\n";
-                statusMessage += "color:" + plageStatus.getCouleurDrapeauEnglish() + "\n";
-                statusMessage += "https://www.noumea.nc/actualites/qualite-des-eaux-de-baignade-0";
-                Status status = twitter.updateStatus(statusMessage);
+                // the first status ! We post no matter previous status
+                System.out.println("No previous tweet : inconditional tweet.");
+                Status status = twitter.updateStatus(EmojiParser.parseToUnicode(TwitterTasklet.composeStatusMessage(plageStatus)));
                 
-
             }
 
         } catch (Exception ex) {
