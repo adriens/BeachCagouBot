@@ -88,4 +88,5 @@ workflows:
               only:
                 - production
     jobs:
+      - build
       - execute
