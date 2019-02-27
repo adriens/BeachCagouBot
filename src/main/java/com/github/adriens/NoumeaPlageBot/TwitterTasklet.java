@@ -58,7 +58,7 @@ public class TwitterTasklet implements Tasklet {
         else {
             out += "Couleur non reconnue.";
         }
-        out += HASHTAGS_TWEET;
+        out += HASHTAGS_TWEET + "\n";
         out += URL_EAUX_BAIGNADES; 
         return out;
     }
