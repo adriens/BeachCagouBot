@@ -39,7 +39,7 @@ public class TwitterTasklet implements Tasklet {
     public static final String MESSAGE_CUSTO_JAUNE = "Êvitez de vous baigner :pray:";
     public static final String MESSAGE_CUSTO_ROUGE = "Pour ne pas tomber :sick:, prenez un :coffee: ou un :tea: et profitez de la vue :sunglasses:";
     
-    public static final String HASHTAGS_TWEET = "#noumea #waterquaity #baiedescitrons #cagougeek";
+    public static final String HASHTAGS_TWEET = "#noumea #waterquality #baiedescitrons #cagougeek";
     
     public static final String composeStatusMessage(PlageStatus aPlageStatus){
         String out = "[" + (new Date()) + "] " + aPlageStatus.getNomPlage() + "\n";
