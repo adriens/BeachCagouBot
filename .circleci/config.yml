@@ -18,7 +18,7 @@ jobs:
 
     environment:
       # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
+      MAVEN_OPTS: -Xmx3200m -Duser.timezone="Pacific/Noumea"
 
     steps:
       - checkout
@@ -53,7 +53,7 @@ jobs:
 
     environment:
       # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
+      MAVEN_OPTS: -Xmx3200m -Duser.timezone="Pacific/Noumea"
 
     steps:
       - checkout
@@ -73,7 +73,7 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
 
       # run the job
-      - run: mvn spring-boot:run -Dtwitter4j.oauth.consumerKey=$consumerKey -Dtwitter4j.oauth.consumerSecret=$consumerSecret -Dtwitter4j.oauth.accessToken=$accessToken -Dtwitter4j.oauth.accessTokenSecret=$accessTokenSecret
+      - run: mvn spring-boot:run -Duser.timezone="Pacific/Noumea" -Dtwitter4j.oauth.consumerKey=$consumerKey -Dtwitter4j.oauth.consumerSecret=$consumerSecret -Dtwitter4j.oauth.accessToken=$accessToken -Dtwitter4j.oauth.accessTokenSecret=$accessTokenSecret
 workflows:
   version: 2
   commit:
