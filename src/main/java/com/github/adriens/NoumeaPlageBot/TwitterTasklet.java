@@ -10,6 +10,9 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import com.vdurmont.emoji.EmojiParser;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
@@ -28,38 +31,35 @@ import twitter4j.TwitterFactory;
 public class TwitterTasklet implements Tasklet {
 
     private String endpoint;
-    
+
     public static final String MESSAGE_DRAPEAU_BLEU = "Drapeau bleu. Eau de bonne qualité : baignade autorisée.";
     public static final String MESSAGE_DRAPEAU_JAUNE = "Drapeau jaune. Eau de qualité médiocre : baignade déconseillée.";
     public static final String MESSAGE_DRAPEAU_ROUGE = "Drapeau rouge. Eau de mauvaise qualité : baignade interdite";
-    
+
     public static final String URL_EAUX_BAIGNADES = "https://goo.gl/frSuC8";
-    
+
     public static final String MESSAGE_CUSTO_BLEU = "Bonne :swimmer: :heart_eyes: :raised_hands:";
     public static final String MESSAGE_CUSTO_JAUNE = "Evitez de vous baigner :pray:";
     public static final String MESSAGE_CUSTO_ROUGE = "Pour ne pas tomber :sick:, prenez un :coffee: ou un :tea: et profitez de la vue :sunglasses:";
-    
+
     public static final String HASHTAGS_TWEET = "#noumea #waterquality #baiedescitrons #cagougeek";
-    
-    public static final String composeStatusMessage(PlageStatus aPlageStatus){
+
+    public static final String composeStatusMessage(PlageStatus aPlageStatus) {
         String out = "[" + (new Date()) + "] " + aPlageStatus.getNomPlage() + "\n";
-        if(aPlageStatus.getCouleurDrapeauEnglish().equalsIgnoreCase("blue")){
+        if (aPlageStatus.getCouleurDrapeauEnglish().equalsIgnoreCase("blue")) {
             out += MESSAGE_DRAPEAU_BLEU + "\n";
             out += MESSAGE_CUSTO_BLEU + "\n";
-        }
-        else if(aPlageStatus.getCouleurDrapeauEnglish().equalsIgnoreCase("yellow")){
+        } else if (aPlageStatus.getCouleurDrapeauEnglish().equalsIgnoreCase("yellow")) {
             out += MESSAGE_DRAPEAU_JAUNE + "\n";
             out += MESSAGE_CUSTO_JAUNE + "\n";
-        }
-        else if(aPlageStatus.getCouleurDrapeauEnglish().equalsIgnoreCase("red")){
+        } else if (aPlageStatus.getCouleurDrapeauEnglish().equalsIgnoreCase("red")) {
             out += MESSAGE_DRAPEAU_ROUGE + "\n";
             out += MESSAGE_CUSTO_ROUGE + "\n";
-        }
-        else {
+        } else {
             out += "Couleur non reconnue.";
         }
         out += HASHTAGS_TWEET + "\n";
-        out += URL_EAUX_BAIGNADES; 
+        out += URL_EAUX_BAIGNADES;
         return out;
     }
 
@@ -93,25 +93,28 @@ public class TwitterTasklet implements Tasklet {
             // get previous status
             List<Status> statuses = twitter.getHomeTimeline();
             if (statuses.size() > 0) {
+
                 // Status status = twitter.updateStatus((new Date()).toString() + "\\u263A Tweet from Spring boot 2 ;-p See https://www.noumea.nc/actualites/qualite-des-eaux-de-baignade-0");
                 //System.out.println("Successfully updated the status to [" + status.getText() + "].");
                 // the latest tweet posted if the first of the list
                 Status lastTwitterStatus = statuses.get(0);
+                /*if(lastTwitterStatus.getCreatedAt()){
+                    
+                }*/
                 System.out.println("Latest tweet : " + lastTwitterStatus.getText());
                 // check previous flag color
-                if(lastTwitterStatus.getText().contains(plageStatus.getCouleurDrapeau().toLowerCase())){
+                if (lastTwitterStatus.getText().contains(plageStatus.getCouleurDrapeau().toLowerCase())) {
                     System.out.println("No chnage in flag : do not tweet anything");
-                }
-                else{
+                } else {
                     System.out.println("Drapeau change : now <" + plageStatus.getCouleurDrapeau() + ">");
                     Status status = twitter.updateStatus(EmojiParser.parseToUnicode(TwitterTasklet.composeStatusMessage(plageStatus)));
-                
+
                 }
             } else {
                 // the first status ! We post no matter previous status
                 System.out.println("No previous tweet : inconditional tweet.");
                 Status status = twitter.updateStatus(EmojiParser.parseToUnicode(TwitterTasklet.composeStatusMessage(plageStatus)));
-                
+
             }
 
         } catch (Exception ex) {
@@ -134,5 +137,20 @@ public class TwitterTasklet implements Tasklet {
      */
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
+    }
+
+    public static final LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+
+    public static int getTweetAgeInDays(Status aStatus) {
+        int out = 0;
+        LocalDate tweetCreateDate = TwitterTasklet.convertToLocalDateViaInstant(aStatus.getCreatedAt());
+        LocalDate now = TwitterTasklet.convertToLocalDateViaInstant(new Date());
+        Period period = Period.between(now, tweetCreateDate);
+        out = period.getDays();
+        return out;
     }
 }
