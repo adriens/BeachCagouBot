@@ -12,6 +12,20 @@ package com.github.adriens.NoumeaPlageBot;
 public class PlageStatus {
 
     /**
+     * @return the videoStreamURL
+     */
+    public String getVideoStreamURL() {
+        return videoStreamURL;
+    }
+
+    /**
+     * @param videoStreamURL the videoStreamURL to set
+     */
+    public void setVideoStreamURL(String videoStreamURL) {
+        this.videoStreamURL = videoStreamURL;
+    }
+
+    /**
      * @return the couleurDrapeau
      */
     private String couleurDrapeau;
@@ -20,8 +34,10 @@ public class PlageStatus {
     private int plageId;
     private String baignadeMessage;
     private String couleurDrapeauEnglish;
-    
+    private String videoStreamURL; 
     public PlageStatus(){
+        
+        
         
     }
     public String getCouleurDrapeau() {
